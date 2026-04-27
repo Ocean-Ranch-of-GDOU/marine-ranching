@@ -1,0 +1,37 @@
+# 环境变量/密钥/配置文件（绝对禁止上传）
+.env
+.env.local
+.env.development
+.env.production
+config.json
+secret.json
+settings.json
+
+# IDE配置文件
+.idea/
+.vscode/
+*.swp
+*.swo
+*.iml
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 编译产物/构建目录
+build/
+dist/
+cmake-build-*/
+*.o
+*.a
+*.so
+
+# 日志文件
+logs/
+*.log
+
+# 依赖目录（根据技术栈选择）
+node_modules/
+__pycache__/
+venv/
+env/

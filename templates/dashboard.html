@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海洋牧场精准投喂监控中心</title>
+    <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body>
+<div class="shell">
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Ocean Ranch</p>
+            <h1 id="farmName">海洋牧场精准投喂监控中心</h1>
+        </div>
+        <div class="status-group">
+            <div class="status-pill">
+                <span class="dot online"></span>
+                <span>数据链路正常</span>
+            </div>
+            <div class="status-meta">
+                <span>最后更新时间</span>
+                <strong id="updatedAt">--</strong>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        <section class="panel panel-map">
+            <div class="panel-head">
+                <div>
+                    <h2>牧场点位总览</h2>
+                    <p>投喂设备分布与实时状态</p>
+                </div>
+                <button class="panel-tag panel-tag-button" id="monitorPreviewTrigger" type="button">实时监控</button>
+            </div>
+            <div class="marine-map-viewport" id="mapViewport">
+                <div class="marine-map" id="mapPanel"></div>
+            </div>
+        </section>
+
+        <section class="panel panel-table">
+            <div class="panel-head">
+                <div>
+                    <h2>投喂区状态</h2>
+                    <p>设备运行、余料和环境指标</p>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>区域</th>
+                        <th>模式</th>
+                        <th>温度</th>
+                        <th>溶氧</th>
+                        <th>投喂进度</th>
+                        <th>余料</th>
+                    </tr>
+                    </thead>
+                    <tbody id="stationTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="panel chart-panel">
+            <div class="panel-head">
+                <div>
+                    <h2>水温趋势</h2>
+                    <p>最近 30 分钟</p>
+                </div>
+            </div>
+            <div class="chart-module">
+                <canvas id="temperatureChart" width="720" height="280"></canvas>
+                <div class="chart-axis-labels" id="temperatureAxis"></div>
+                <div class="legend chart-legend" id="temperatureLegend"></div>
+            </div>
+        </section>
+
+        <section class="panel chart-panel">
+            <div class="panel-head">
+                <div>
+                    <h2>投喂进度</h2>
+                    <p>实时 - 今日作业节奏</p>
+                </div>
+            </div>
+            <div class="chart-module">
+                <canvas id="feedingChart" width="720" height="280"></canvas>
+                <div class="chart-axis-labels" id="feedingAxis"></div>
+                <div class="legend chart-legend" id="feedingLegend"></div>
+            </div>
+        </section>
+
+        <section class="panel panel-alarms">
+            <div class="panel-head">
+                <div>
+                    <h2>告警中心</h2>
+                    <p>最近 24 小时</p>
+                </div>
+            </div>
+            <div class="alarm-list" id="alarmList"></div>
+        </section>
+    </main>
+</div>
+
+<div class="monitor-modal-backdrop" id="monitorModalBackdrop" hidden>
+    <div class="monitor-modal" role="dialog" aria-modal="true" aria-labelledby="monitorModalTitle">
+        <div class="monitor-modal-header">
+            <div>
+                <h2 id="monitorModalTitle">实时监控界面</h2>
+                <p>投喂画面、设备状态与操作控制</p>
+            </div>
+            <button class="monitor-modal-close" id="monitorModalClose" type="button">关闭</button>
+        </div>
+        <div class="monitor-structure">
+            <div class="monitor-canvas-panel">
+                <div class="monitor-video-head">
+                    <div class="monitor-video-badge">
+                        <span class="monitor-video-dot"></span>
+                        <span id="monitorCameraName">1号摄像头</span>
+                    </div>
+                    <div class="monitor-video-meta">
+                        <span id="monitorVideoClock">--:--:--</span>
+                        <span class="monitor-video-chip">HD</span>
+                    </div>
+                </div>
+                <div class="monitor-grid-bg monitor-video-stage">
+                    <div class="monitor-video-overlay">
+                        <div class="monitor-scanline"></div>
+                        <div class="monitor-corner monitor-corner-left"></div>
+                        <div class="monitor-corner monitor-corner-right"></div>
+                    </div>
+                    <div class="monitor-canvas-label-group">
+                        <div class="monitor-canvas-label">摄像头画面</div>
+                        <p class="monitor-canvas-hint">可接入 RTSP / HLS 视频流，当前为监控预览占位区</p>
+                    </div>
+                    <div class="monitor-video-float">
+                        <span>自动投喂</span>
+                        <strong id="monitorFeedState">待机中</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="monitor-toolbar">
+                <button class="monitor-toolbar-button" data-action="amount" type="button">设置投喂量</button>
+                <button class="monitor-toolbar-button" data-action="time" type="button">投喂时间</button>
+                <button class="monitor-toolbar-button" data-action="interval" type="button">投喂间隔</button>
+                <button class="monitor-toolbar-button monitor-toolbar-button-primary" data-action="start" type="button">开始投喂</button>
+                <label class="monitor-toolbar-select">
+                    <span>切换摄像头</span>
+                    <select id="monitorCameraSelect">
+                        <option>1号摄像头</option>
+                        <option>2号摄像头</option>
+                        <option>3号摄像头</option>
+                    </select>
+                </label>
+            </div>
+            <div class="monitor-status-strip">
+                <div class="monitor-status-card">
+                    <span>投喂量</span>
+                    <strong id="monitorAmountValue">12.5 kg</strong>
+                </div>
+                <div class="monitor-status-card">
+                    <span>计划时间</span>
+                    <strong id="monitorTimeValue">10:30</strong>
+                </div>
+                <div class="monitor-status-card">
+                    <span>投喂间隔</span>
+                    <strong id="monitorIntervalValue">15 min</strong>
+                </div>
+                <div class="monitor-status-card monitor-status-card-wide">
+                    <span>操作反馈</span>
+                    <strong id="monitorActionFeedback">等待操作</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/dashboard.js"></script>
+</body>
+</html>
