@@ -74,7 +74,21 @@ python main.py
 启动后访问：
 
 ```text
-http://127.0.0.1:8000
+http://127.0.0.1:8080/
+```
+
+后端接口文档地址：
+
+```text
+http://127.0.0.1:8080/docs
+```
+
+运行 `python main.py` 后，终端会打印前端页面和后端接口文档地址。默认只会自动打开前端页面，不会自动弹出后端接口文档。
+
+如需同时自动打开后端接口文档，可以执行：
+
+```bash
+AUTO_OPEN_DOCS=1 python main.py
 ```
 
 ## MQTT Real-Time Data Access
