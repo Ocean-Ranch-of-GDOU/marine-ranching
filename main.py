@@ -19,6 +19,12 @@ AUTO_OPEN_BROWSER = os.getenv("AUTO_OPEN_BROWSER", "1").strip().lower() not in {
     "no",
     "off",
 }
+AUTO_OPEN_DOCS = os.getenv("AUTO_OPEN_DOCS", "0").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
 
 
 def _is_wsl() -> bool:
@@ -66,7 +72,8 @@ def _open_pages_when_ready(port: int) -> None:
         return
 
     _open_url(f"{base_url}/")
-    _open_url(f"{base_url}/docs")
+    if AUTO_OPEN_DOCS:
+        _open_url(f"{base_url}/docs")
 
 
 def _print_startup_urls(port: int) -> None:
@@ -75,7 +82,8 @@ def _print_startup_urls(port: int) -> None:
     print(f"Service listening on: http://{HOST}:{port}", flush=True)
     print(f"Frontend page:       {base_url}/", flush=True)
     print(f"Backend docs page:   {base_url}/docs", flush=True)
-    print(f"Browser auto-open:   {'enabled' if AUTO_OPEN_BROWSER else 'disabled'}", flush=True)
+    print(f"Frontend auto-open:  {'enabled' if AUTO_OPEN_BROWSER else 'disabled'}", flush=True)
+    print(f"Docs auto-open:      {'enabled' if AUTO_OPEN_DOCS else 'disabled'}", flush=True)
     print()
 
 
