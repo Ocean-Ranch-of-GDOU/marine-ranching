@@ -23,6 +23,7 @@ def create_application() -> FastAPI:
         lifespan=lifespan,
     )
     app.mount("/static", StaticFiles(directory=str(settings.static_dir)), name="static")
+    app.mount("/resource", StaticFiles(directory=str(settings.base_dir / "resource")), name="resource")
     app.include_router(dashboard_pages_router)
     app.include_router(dashboard_data_router, prefix="/api")
     return app
