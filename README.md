@@ -4,7 +4,8 @@
 
 本项目面向海洋牧场场景，围绕投喂设备、环境传感器和视频监控数据，提供单屏大屏展示、实时状态监测、趋势分析和监控弹窗交互能力。后端采用模块化 FastAPI 架构，前端采用原生 HTML、CSS、JavaScript 构建可视化界面，并支持通过 MQTT 接入真实设备数据。
 
-<img width="1920" height="985" alt="e9ee5a05288be21b965494eda0503e99" src="https://github.com/user-attachments/assets/d55c3df3-b3ea-4025-98f4-46cd9503fdf0" />
+<img width="1512" height="792" alt="image" src="https://github.com/user-attachments/assets/240c83fb-562c-493b-82c7-e624b8eaac4e" />
+
 
 
 ## Features
