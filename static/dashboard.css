@@ -429,9 +429,10 @@ th {
     z-index: 30;
     display: grid;
     place-items: center;
-    padding: 24px;
+    padding: 12px;
     background: rgba(7, 28, 47, 0.3);
     backdrop-filter: blur(6px);
+    overflow: hidden;
 }
 
 .monitor-modal-backdrop[hidden] {
@@ -439,16 +440,19 @@ th {
 }
 
 .monitor-modal {
-    width: min(1180px, calc(100vw - 48px));
-    max-height: calc(100vh - 48px);
+    width: min(1120px, calc(100vw - 24px));
+    height: min(720px, calc(100dvh - 24px));
+    max-height: calc(100dvh - 24px);
+    display: flex;
+    flex-direction: column;
     background:
         radial-gradient(circle at top left, rgba(49, 141, 255, 0.08), transparent 34%),
         linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(243, 248, 253, 0.98));
     border: 1px solid rgba(16, 126, 216, 0.16);
     border-radius: 24px;
-    padding: 18px;
+    padding: 14px;
     box-shadow: 0 36px 90px rgba(7, 28, 47, 0.26);
-    overflow: auto;
+    overflow: hidden;
 }
 
 .monitor-modal-header {
@@ -456,12 +460,13 @@ th {
     align-items: flex-start;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
+    flex: 0 0 auto;
 }
 
 .monitor-modal-header h2 {
-    font-size: 24px;
-    margin-bottom: 6px;
+    font-size: 22px;
+    margin-bottom: 4px;
 }
 
 .monitor-modal-header p {
@@ -490,10 +495,16 @@ th {
 
 .monitor-structure {
     display: grid;
-    gap: 14px;
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    gap: 10px;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 .monitor-canvas-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
     overflow: hidden;
     border-radius: 24px;
     border: 1px solid rgba(162, 196, 224, 0.42);
@@ -506,7 +517,7 @@ th {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 14px 16px;
+    padding: 10px 14px;
     border-bottom: 1px solid rgba(162, 196, 224, 0.42);
     background: rgba(255,255,255,0.72);
 }
@@ -545,7 +556,11 @@ th {
 }
 
 .monitor-grid-bg {
-    min-height: 500px;
+    flex: 1 1 auto;
+    aspect-ratio: auto;
+    width: 100%;
+    min-height: 0;
+    max-height: none;
     display: grid;
     place-items: center;
     background:
@@ -556,6 +571,16 @@ th {
     background-size: auto, auto, 24px 24px, auto;
     position: relative;
     overflow: hidden;
+}
+
+.monitor-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+    background: #071c2f;
 }
 
 .monitor-video-stage::after {
@@ -623,13 +648,13 @@ th {
 
 .monitor-video-float {
     position: absolute;
-    right: 22px;
-    bottom: 22px;
+    right: 14px;
+    bottom: 14px;
     z-index: 1;
     display: grid;
     gap: 4px;
     min-width: 160px;
-    padding: 12px 14px;
+    padding: 10px 12px;
     border-radius: 16px;
     background: rgba(8, 24, 42, 0.64);
     border: 1px solid rgba(107, 186, 246, 0.24);
@@ -647,8 +672,8 @@ th {
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
-    min-height: 64px;
-    padding: 14px;
+    min-height: 54px;
+    padding: 10px;
     border-radius: 20px;
     border: 1px solid rgba(162, 196, 224, 0.42);
     background: rgba(255, 255, 255, 0.72);
@@ -669,7 +694,7 @@ th {
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    padding: 12px 16px;
+    padding: 10px 14px;
     box-shadow: 0 8px 16px rgba(19, 80, 140, 0.06);
     transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background 140ms ease;
 }
@@ -701,7 +726,7 @@ th {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    min-height: 50px;
+    min-height: 44px;
     padding: 0 14px;
     border-radius: 14px;
     border: 1px solid rgba(24, 103, 190, 0.16);
@@ -730,7 +755,7 @@ th {
 .monitor-status-card {
     display: grid;
     gap: 6px;
-    padding: 14px 16px;
+    padding: 10px 12px;
     border-radius: 18px;
     border: 1px solid rgba(162, 196, 224, 0.42);
     background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(242,248,253,0.94));
@@ -808,12 +833,9 @@ th {
 @media (max-width: 760px) {
     .monitor-modal {
         width: calc(100vw - 24px);
-        max-height: calc(100vh - 24px);
-        padding: 14px;
-    }
-
-    .monitor-grid-bg {
-        min-height: 320px;
+        height: calc(100dvh - 24px);
+        max-height: calc(100dvh - 24px);
+        padding: 10px;
     }
 
     .monitor-video-head,
@@ -824,6 +846,7 @@ th {
 
     .monitor-toolbar {
         align-items: stretch;
+        gap: 8px;
     }
 
     .monitor-toolbar-button,

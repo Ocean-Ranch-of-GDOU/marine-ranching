@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>海洋牧场精准投喂监控中心</title>
-    <link rel="stylesheet" href="/static/dashboard.css">
+    <link rel="stylesheet" href="/static/dashboard.css?v=20260429-camera-fit">
 </head>
 <body>
 <div class="shell">
@@ -125,14 +125,23 @@
                     </div>
                 </div>
                 <div class="monitor-grid-bg monitor-video-stage">
+                    <video
+                        class="monitor-video"
+                        id="monitorVideo"
+                        src="/resource/1.mp4"
+                        autoplay
+                        muted
+                        loop
+                        playsinline
+                    ></video>
                     <div class="monitor-video-overlay">
                         <div class="monitor-scanline"></div>
                         <div class="monitor-corner monitor-corner-left"></div>
                         <div class="monitor-corner monitor-corner-right"></div>
                     </div>
-                    <div class="monitor-canvas-label-group">
-                        <div class="monitor-canvas-label">摄像头画面</div>
-                        <p class="monitor-canvas-hint">可接入 RTSP / HLS 视频流，当前为监控预览占位区</p>
+                    <div class="monitor-canvas-label-group" id="monitorVideoFallback">
+<!--                        <div class="monitor-canvas-label">摄像头画面</div>-->
+<!--                        <p class="monitor-canvas-hint">视频加载中，请稍候</p>-->
                     </div>
                     <div class="monitor-video-float">
                         <span>自动投喂</span>
@@ -148,9 +157,9 @@
                 <label class="monitor-toolbar-select">
                     <span>切换摄像头</span>
                     <select id="monitorCameraSelect">
-                        <option>1号摄像头</option>
-                        <option>2号摄像头</option>
-                        <option>3号摄像头</option>
+                        <option value="1">1号摄像头</option>
+                        <option value="2">2号摄像头</option>
+                        <option value="3">3号摄像头</option>
                     </select>
                 </label>
             </div>
@@ -176,6 +185,6 @@
     </div>
 </div>
 
-<script src="/static/dashboard.js"></script>
+<script src="/static/dashboard.js?v=20260429-camera-fit"></script>
 </body>
 </html>

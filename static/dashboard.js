@@ -341,6 +341,8 @@ function initializeMonitorModal() {
     const toolbarButtons = Array.from(document.querySelectorAll(".monitor-toolbar-button"));
     const cameraSelect = document.getElementById("monitorCameraSelect");
     const cameraName = document.getElementById("monitorCameraName");
+    const monitorVideo = document.getElementById("monitorVideo");
+    const monitorVideoFallback = document.getElementById("monitorVideoFallback");
     const videoClock = document.getElementById("monitorVideoClock");
     const feedState = document.getElementById("monitorFeedState");
     const amountValue = document.getElementById("monitorAmountValue");
@@ -360,6 +362,21 @@ function initializeMonitorModal() {
         interval: "15 min",
         running: false,
     };
+
+    const cameraSources = {
+        "1": { name: "1号摄像头", src: "/resource/1.mp4" },
+        "2": { name: "2号摄像头", src: "/resource/2.mp4" },
+        "3": { name: "3号摄像头", src: "/resource/3.mp4" },
+    };
+
+    function resolveCameraId(rawValue) {
+        const value = String(rawValue || "").trim();
+        if (cameraSources[value]) {
+            return value;
+        }
+        const numberMatch = value.match(/\d+/);
+        return numberMatch && cameraSources[numberMatch[0]] ? numberMatch[0] : "1";
+    }
 
     function updateClock() {
         if (!videoClock) {
@@ -389,9 +406,39 @@ function initializeMonitorModal() {
         }
     }
 
+    function playMonitorVideo() {
+        if (!monitorVideo) {
+            return;
+        }
+        const playPromise = monitorVideo.play();
+        if (playPromise) {
+            playPromise.catch(() => {
+                setFeedback("视频等待用户交互后播放");
+            });
+        }
+    }
+
+    function switchCamera(rawCameraId) {
+        const cameraId = resolveCameraId(rawCameraId);
+        const nextCamera = cameraSources[cameraId];
+        if (cameraName) {
+            cameraName.textContent = nextCamera.name;
+        }
+        if (cameraSelect && cameraSelect.value !== cameraId) {
+            cameraSelect.value = cameraId;
+        }
+        if (monitorVideo && new URL(monitorVideo.currentSrc || monitorVideo.src, window.location.href).pathname !== nextCamera.src) {
+            monitorVideo.src = `${nextCamera.src}?v=${Date.now()}`;
+            monitorVideo.load();
+        }
+        playMonitorVideo();
+        setFeedback(`已切换至${nextCamera.name}`);
+    }
+
     triggerButton.addEventListener("click", () => {
         updateClock();
         syncMonitorStatus();
+        switchCamera(cameraSelect?.value || "1");
         backdrop.hidden = false;
     });
 
@@ -413,10 +460,17 @@ function initializeMonitorModal() {
 
     if (cameraSelect) {
         cameraSelect.addEventListener("change", () => {
-            if (cameraName) {
-                cameraName.textContent = cameraSelect.value;
-            }
-            setFeedback(`已切换至${cameraSelect.value}`);
+            switchCamera(cameraSelect.value);
+        });
+    }
+
+    if (monitorVideo && monitorVideoFallback) {
+        monitorVideo.addEventListener("loadeddata", () => {
+            monitorVideoFallback.hidden = true;
+        });
+        monitorVideo.addEventListener("error", () => {
+            monitorVideoFallback.hidden = false;
+            setFeedback("当前摄像头视频加载失败");
         });
     }
 
@@ -449,6 +503,7 @@ function initializeMonitorModal() {
 
     updateClock();
     syncMonitorStatus();
+    switchCamera(cameraSelect?.value || "1");
     setInterval(updateClock, 1000);
 }
 
